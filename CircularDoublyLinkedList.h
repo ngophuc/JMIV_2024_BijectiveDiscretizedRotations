@@ -1,9 +1,9 @@
-#ifndef CircularDoublyLinkedList
-#define CircularDoublyLinkedList
+#ifndef CircularDoublyLinkedList_h
+#define CircularDoublyLinkedList_h
 
-#include <vector>
 #include "Tree.h"
 
+#include <vector>
 using namespace std;
 
 typedef struct {
@@ -39,4 +39,4 @@ void displayListBackward(node* head);
 string displayNodeData(node* aNode);
 void displayTree(node* head);
 
-#endif // CircularDoublyLinkedList
+#endif // CircularDoublyLinkedList_h

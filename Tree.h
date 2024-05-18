@@ -1,8 +1,7 @@
-#ifndef Tree
-#define Tree
+#ifndef Tree_h
+#define Tree_h
 
 #include <vector>
-
 using namespace std;
 
 typedef struct nodeTree{
@@ -24,4 +23,4 @@ nodeTree* updateOmega(nodeTree* node, int o);
 nodeTree* updateAlpha(nodeTree* node, int a);
 nodeTree* updateBijectivity(nodeTree* node, bool b);
 
-#endif //Tree
+#endif //Tree_h
