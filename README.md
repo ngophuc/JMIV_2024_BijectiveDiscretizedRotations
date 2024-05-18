@@ -16,4 +16,4 @@ make -j4
 
 ## Execution
 
-Comming soon ...
+./BijectiveDiscretizedRotations
