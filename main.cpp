@@ -47,6 +47,7 @@ int main(int , char**) {
     if(h!=sortedNormNode.back()) {//Not remove the last element (keep one node in the tree)
       //line 6: processing nodes by the sorted norm in sortedNormNode
       node* aNodeCircleGraph = h.second; //node h to be removed from the circular graph
+      int normDeletedNode = h.first; //norm of node to be removed
       //line 7: set of segments being adjacent to h
       node* aNodePrev = aNodeCircleGraph->prev;
       nodeTree* aNodeTree = aNodeCircleGraph->data.p_segment;//node of tree
@@ -54,16 +55,18 @@ int main(int , char**) {
       //line 10-18: there exist two distinct segments
       //line 11: create a new segment by merging two segments being adjacent to h
       nodeTree* aNodeParent = createNodeTree (tree.size(), aNodeTreePrev->tripletLeft,aNodeTree->tripletRight);//new node
-      tree.push_back(aNodeParent); //add new node to the tree
-      //make connections aNodeTree, aNodeTreePrev -> aNodeParent
-      addParent(aNodeTree, aNodeParent->idNode, aNodeParent);
-      addParent(aNodeTreePrev, aNodeParent->idNode, aNodeParent);
-      //delete aNodeCircleGraph in the circular graph
-      int normDeletedNode = h.first; //norm of node to be removed
-      deleteNode(&circleGraph, aNodeCircleGraph);
-      updatePSegment(aNodePrev, aNodeParent);
       //line 12: update omega of the new node in the lower level
       updateOmega(aNodeParent, normDeletedNode-1);
+      //line 13: add new node to the tree
+      tree.push_back(aNodeParent);
+      //line 14: update tree by adding the new segment
+      updatePSegment(aNodePrev, aNodeParent);
+      //lines 15 to 18: connect the two existing segments to the parent
+      //line 18: make connections aNodeTree, aNodeTreePrev -> aNodeParent
+      addParent(aNodeTree, aNodeParent->idNode, aNodeParent);
+      addParent(aNodeTreePrev, aNodeParent->idNode, aNodeParent);
+      //line 16: delete aNodeCircleGraph in the circular graph
+      deleteNode(&circleGraph, aNodeCircleGraph);
       //line 17: update alpha of two segments after the fusion
       updateAlpha(aNodeTree, normDeletedNode);
       updateAlpha(aNodeTreePrev, normDeletedNode);
@@ -93,8 +96,11 @@ int main(int , char**) {
   }
   //lines 20 to 26: unbinary the tree
   for(size_t it=0; it<tree.size()-1; it++) {
+    //line 20: for each node of the tree
     nodeTree* aNode = tree.at(it);
+    //track back from the
     if(aNode->alpha <= aNode->omega) {
+      //line 21: create a new parent node only if alpha <= omega
       nodeTree* aNodeParent = aNode->p_parent;
       while(aNodeParent->alpha > aNodeParent->omega) {
         aNodeParent = aNodeParent->p_parent;
