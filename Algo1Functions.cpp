@@ -128,9 +128,10 @@ vector<pair<int, node*> > sortGraphNode(node* circleGraph) {
    }
   */
   
-  //Step 6: sort hinge angles in function of delta (in decreasing order)
+  //Step 6: sort hinge angles in function of delta (in increasing order)
   std::sort(sortedNormNode.begin(), sortedNormNode.end(), [](const pair<int, node*>& t1, const pair<int, node*>& t2) {
-    return t1.first>t2.first;
+    //return t1.first>t2.first;//decreasing
+    return t1.first<t2.first;//increasing
   });
   /* CHECK
    cout<<"Après le trie"<<endl;
