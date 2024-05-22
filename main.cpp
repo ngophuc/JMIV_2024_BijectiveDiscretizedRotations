@@ -9,7 +9,7 @@ string displayVector2(std::vector<int> v) {
 }
 
 int main(int , char**) {
-  int r=5;
+  int r=5;//square of radius
   //Section 9: Discrete rotation tree construction: Bottom-up
   
   //Section 9.1: Initialization
@@ -42,12 +42,12 @@ int main(int , char**) {
   int idNode;
   //lines 5 to 19
   //Each iteration, a hinge angle is removed from the circular graph
-  for(auto h : sortedNormNode) {
-    idNode = h.second->data.idNode;
-    if(h!=sortedNormNode.back()) {//Not remove the last element (keep one node in the tree)
+  for(auto aNode : sortedNormNode) {
+    idNode = aNode.second->data.idNode;
+    if(aNode!=sortedNormNode.back()) {//Not remove the last element (keep one node in the tree)
       //line 6: processing nodes by the sorted norm in sortedNormNode
-      node* aNodeCircleGraph = h.second; //node h to be removed from the circular graph
-      int normDeletedNode = h.first; //norm of node to be removed
+      node* aNodeCircleGraph = aNode.second; //node h to be removed from the circular graph
+      int normDeletedNode = aNode.first; //norm of node to be removed
       //line 7: set of segments being adjacent to h
       node* aNodePrev = aNodeCircleGraph->prev;
       nodeTree* aNodeTree = aNodeCircleGraph->data.p_segment;//node of tree
@@ -83,7 +83,7 @@ int main(int , char**) {
     //lines 8-9: one segment
     //update alpha for last node (rood of the tree)
     updateAlpha(tree.back(), 0);
-    /*
+    /* CHECK
      //display last level
      //display circular graph
      printf("----- Display circular graph(last) \n");
@@ -94,21 +94,23 @@ int main(int , char**) {
      cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" avec (alpha="<<e->alpha<<", omega="<<e->omega<<")"<<endl;
      */
   }
+  
   //lines 20 to 26: unbinary the tree
-  for(size_t it=0; it<tree.size()-1; it++) {
-    //line 20: for each node of the tree
+  //Line 20: go through the tree from the root to the leaves
+  //Att: the root (alpha=0 and omega=0: it=tree.size()-1) is a particular note that we keep anyway
+  for(int it=tree.size()-2; it>=0; it--) {
+    //Line 21: for each node
     nodeTree* aNode = tree.at(it);
-    //track back from the
-    if(aNode->alpha <= aNode->omega) {
-      //line 21: create a new parent node only if alpha <= omega
-      nodeTree* aNodeParent = aNode->p_parent;
-      while(aNodeParent->alpha > aNodeParent->omega) {
-        aNodeParent = aNodeParent->p_parent;
-      }
-      addParent(aNode, aNodeParent->idNode, aNodeParent);
+    nodeTree* aNodeParent = aNode->p_parent;//Except the Root has no parent, all other node has a parent
+    //Line 21: check wherether the node's parent is removed or kept
+    if(aNodeParent->alpha > aNodeParent->omega) {//the parent node needs to be removed
+      //Lines 25 to 27: the node takes the grandparent as its parent
+      nodeTree* aNodeGrandParent = aNodeParent->p_parent;
+      addParent(aNode, aNodeGrandParent->idNode, aNodeGrandParent);
     }
   }
-  /* CHECK
+  
+  /* CHECK */
    cout<<"------- Display full tree from vector"<<endl;
    for(auto e : tree){
    if(e->alpha > e->omega) {
@@ -116,15 +118,15 @@ int main(int , char**) {
    }
    cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" avec (alpha="<<e->alpha<<", omega="<<e->omega<<")"<<endl;
    }
-   */
-  
+   
   //Clean tree: retrive only node having alpha < omega
   vector<nodeTree*> clean_tree;
   for(auto e : tree) {
-    if(e->alpha <= e->omega) {
+    if(e->alpha <= e->omega) {//Keep only nodes having alpha <= omega
       clean_tree.push_back(e);
     }
   }
+  
   cout<<"------- Display clean tree from vector"<<endl;
   for(auto e : clean_tree){
     cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" with (alpha="<<e->alpha<<", omega="<<e->omega<<")"<<endl;
