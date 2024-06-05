@@ -30,3 +30,14 @@ nodeTree* updateBijectivity(nodeTree* node, bool b){
   node->isBijective = b;
   return node;
 }
+
+void updateLevelBottomUp(vector<nodeTree*> tree){
+  nodeTree* root = tree.back();
+  root->level = 0;
+  assert(root->idParent==root->idNode); //&& root->alpha=0
+  for(int it=tree.size()-2; it>=0; it--) { //update level from root to leaves (back to front)
+    nodeTree* aNode = tree.at(it);
+    int idParent = aNode->idParent;
+    aNode->level = tree.at(idParent)->level + 1;//increase in the level from its parent
+  }
+}

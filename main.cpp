@@ -83,6 +83,7 @@ int main(int , char**) {
     //lines 8-9: one segment
     //update alpha for last node (rood of the tree)
     updateAlpha(tree.back(), 0);
+    tree.back()->idParent=tree.back()->idNode;//root has itself as parent
     /* CHECK
      //display last level
      //display circular graph
@@ -109,14 +110,16 @@ int main(int , char**) {
       addParent(aNode, aNodeGrandParent->idNode, aNodeGrandParent);
     }
   }
-  
+  //update level attributs in the tree (after unbinary)
+  updateLevelBottomUp(tree); 
+
   /* CHECK */
    cout<<"------- Display full tree from vector"<<endl;
    for(auto e : tree){
    if(e->alpha > e->omega) {
    cout<<"e->id ="<<e->idNode<<" ---> remove..."<<endl;
    }
-   cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" avec (alpha="<<e->alpha<<", omega="<<e->omega<<")"<<endl;
+   cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<"with (alpha="<<e->alpha<<", omega="<<e->omega<<"), level="<<e->level<<endl;
    }
    
   //Clean tree: retrive only node having alpha < omega
@@ -129,7 +132,7 @@ int main(int , char**) {
   
   cout<<"------- Display clean tree from vector"<<endl;
   for(auto e : clean_tree){
-    cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" with (alpha="<<e->alpha<<", omega="<<e->omega<<")"<<endl;
+    cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" with (alpha="<<e->alpha<<", omega="<<e->omega<<"), level="<<e->level<<endl;
   }
   
   //Section 10.5.2: bijective discrete rotations
@@ -150,7 +153,7 @@ int main(int , char**) {
   
   cout<<"------- Display clear tree with bijectivity from vector"<<endl;
   for(auto e : clean_tree){
-    cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" with (alpha="<<e->alpha<<", omega="<<e->omega<<") and bijectiviy="<<e->isBijective<<endl;
+    cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" with (alpha="<<e->alpha<<", omega="<<e->omega<<"), level="<<e->level<<" and bijectiviy="<<e->isBijective<<endl;
   }
   
   return 0;

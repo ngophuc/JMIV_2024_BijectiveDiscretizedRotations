@@ -48,6 +48,7 @@ int sign(int p, int q, int k) {
     else //both are negative
       return 1;
   }
+  return 0;
 }
 
 int signCosinus(int p, int q, int k) {
@@ -189,6 +190,7 @@ int compareCosinusHingeAngles(const vector<int>& a1, const vector<int>& a2) {
     return sign_3_9*sign_3_11;
   if (LHS_3_12 < RHS_3_12)
     return -1*sign_3_9*sign_3_11;
+  return 0;
 }
 
 // Compare triplets (Theorem 3.9 PHD Yohan, page 32)
