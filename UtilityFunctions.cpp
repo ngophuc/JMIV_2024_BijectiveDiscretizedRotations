@@ -361,6 +361,8 @@ double computeAngle (vector<int> triplet) {
   int p = triplet[0];
   int q = triplet[1];
   int k = triplet[2];
+  if(p==0 && q==0)
+    return 0;
   int p2 = p*p;
   int q2 = q*q;
   int k2 = k*k;
