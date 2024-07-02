@@ -9,12 +9,13 @@ using namespace std;
 typedef struct nodeTree{
   int idNode;
   int idParent;
-  bool isBijective;
+  bool isBijective=false;
   nodeTree* p_parent;
   vector<int> tripletLeft;
   vector<int> tripletRight;
-  int alpha;
-  int omega;
+  int alpha=-1;
+  int omega=-1;
+  vector<vector<int> > pAngles;//List of bijective angles belonging to the segment
 } nodeTree;
 
 nodeTree* createNodeTree (int id, vector<int> tf, vector<int> tr);

@@ -300,6 +300,15 @@ int compareCosinusHingePythagoreAngles(const vector<int>& triplet, const vector<
 }
 
 int compareTripletPythagoreAngles(const vector<int>& triplet, const vector<int>& pythagore) {
+  //FIXME: Temporary
+  double angleTriplet = computeAngle(triplet);
+  double anglePythagore = angle_from_sin_cos(double(pythagore[1])/pythagore[2], double(pythagore[0])/pythagore[2]);
+  if(angleTriplet<anglePythagore)
+    return -1;
+  if(angleTriplet>anglePythagore)
+    return 1;
+  return 0;
+  
   // triplet (alpha) vs pythagore (theta)
   // returns
   // -1 if alpha < theta

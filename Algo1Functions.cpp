@@ -96,6 +96,8 @@ vector<vector<int> > removeDoubleTriplet(const vector<vector<int> >& pqk_trie) {
     pqk_non_double.push_back(pqk_trie.at(it_min));
     it=it_next;
   }
+  //Push the last angle
+  pqk_non_double.push_back(pqk_trie.back());
   /* CHECK
   cout<<"Après supp"<<endl;
   for(auto p : pqk_non_double) {
