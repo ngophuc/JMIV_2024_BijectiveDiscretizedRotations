@@ -11,7 +11,8 @@
 #include "DGtal/base/Common.h"
 
 #include "Tree.h"
-#include "CircularDoublyLinkedList.h"
+//#include "CircularDoublyLinkedList.h"
+//#include "DoublyLinkedList.h"
 
 using namespace DGtal;
 using namespace Z2i;

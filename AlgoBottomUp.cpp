@@ -112,13 +112,13 @@ int main(int , char**) {
   }
   
   /* CHECK */
-   cout<<"------- Display full tree from vector"<<endl;
-   for(auto e : tree){
-   if(e->alpha > e->omega) {
-   cout<<"e->id ="<<e->idNode<<" ---> remove..."<<endl;
-   }
+  cout<<"------- Display full tree from vector"<<endl;
+  for(auto e : tree){
+    if(e->alpha > e->omega) {
+      cout<<"e->id ="<<e->idNode<<" ---> remove..."<<endl;
+    }
    cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<"with (alpha="<<e->alpha<<", omega="<<e->omega<<")"<<endl;
-   }
+  }
    
   //Clean tree: retrive only node having alpha < omega
   vector<nodeTree*> clean_tree;

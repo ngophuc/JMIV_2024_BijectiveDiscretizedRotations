@@ -1,7 +1,6 @@
 #ifndef DoublyLinkedList
 #define DoublyLinkedList
 
-#include <vector>
 #include "Tree.h"
 
 using namespace std;

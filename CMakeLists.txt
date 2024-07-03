@@ -18,5 +18,5 @@ add_definitions(-g)
 add_executable(AlgoBottomUp AlgoBottomUp.cpp CLI11.hpp CircularDoublyLinkedList.h CircularDoublyLinkedList.cpp Tree.h Tree.cpp UtilityFunctions.h UtilityFunctions.cpp Algo1Functions.h Algo1Functions.cpp)
 target_link_libraries(AlgoBottomUp ${DGTAL_LIBRARIES})
 
-#add_executable(AlgoTopDown AlgoTopDown.cpp CLI11.hpp DoublyLinkedList.h DoublyLinkedList.cpp Tree.h Tree.cpp)
-#target_link_libraries(AlgoTopDown ${DGTAL_LIBRARIES})
+add_executable(AlgoTopDown AlgoTopDown.cpp CLI11.hpp DoublyLinkedList.h DoublyLinkedList.cpp Tree.h Tree.cpp UtilityFunctions.h UtilityFunctions.cpp Algo2Functions.h Algo2Functions.cpp)
+target_link_libraries(AlgoTopDown ${DGTAL_LIBRARIES})

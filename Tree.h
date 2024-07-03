@@ -24,6 +24,7 @@ nodeTree* addParent(nodeTree* node, int idF, nodeTree* pF);
 
 nodeTree* updateOmega(nodeTree* node, int o);
 nodeTree* updateAlpha(nodeTree* node, int a);
+nodeTree* updateAlpha(nodeTree* node);//Eq. 48
 nodeTree* updateBijectivity(nodeTree* node, bool b);
 
 #endif //Tree_h

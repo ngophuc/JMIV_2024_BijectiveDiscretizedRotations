@@ -21,7 +21,7 @@ node* insertAfter(node* prev_node, int id, nodeTree* aNodeTree) {
   // check if previous node is NULL
   if (prev_node == NULL) {
     cout << "previous node cannot be NULL";
-    return;
+    return NULL;
   }
   
   // allocate memory for newNode
