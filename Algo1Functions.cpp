@@ -91,7 +91,7 @@ vector<vector<int> > sortTriplet(const vector<vector<int> >& triplets) {
   std::sort(begin(pqk_trie), end(pqk_trie), [](vector<int> t1, vector<int> t2) {
     return compareHingeAngles(t1, t2)<0;
   });
-  /* CHECK
+  /* CHECK $/
   cout<<"After sorting"<<endl;
   for(auto p : pqk_trie) {
     cout<<"("<<p[0]<<","<<p[1]<<","<<p[2]<<") ==> "<<computeAngle(p)*180/M_PI<<endl;
@@ -209,27 +209,68 @@ vector<nodeTree*> createFirstTree(node* circleGraph, int mu) {
 /*___________________________________________________________*/
 /* Check belonging Pythagore angle for intervals of the tree */
 /*___________________________________________________________*/
- nodeTree* findNodeOfPythagoreAngle(const vector<int>& angle, const vector<nodeTree*>& tree) {
-   int idLeft = 0;
-   int idRight = tree.size();
-   int idMid = 0;
-   while (idLeft <= idRight) {
-     idMid = (idLeft + idRight)/ 2;
-     nodeTree* node = tree.at(idMid);
-     vector<int> tL = node->tripletLeft;
-     vector<int> tR = node->tripletRight;
-     if(node->omega==5) {
-       int cL = compareTripletPythagoreAngles(tL, angle);
-       int cR = compareTripletPythagoreAngles(tR, angle);
-       if(cL==-1 && cR==1) //tL < angle < tR
-         return node;
-       if(cL==1) //angle < tL => ignore right half
-         idRight = idMid - 1;
-       if(cR==-1) //angle > tR => ignore left half
-         idLeft = idMid + 1;
-     }
-     else
-       return NULL;
-   }
-   return NULL;
+nodeTree* findNodeOfPythagoreAngle(const vector<int>& angle, const vector<nodeTree*>& tree) {
+ int idLeft = 0;
+ int idRight = tree.size();
+ int idMid = 0;
+ while (idLeft <= idRight) {
+   idMid = (idLeft + idRight)/ 2;
+   nodeTree* node = tree.at(idMid);
+   vector<int> tL = node->tripletLeft;
+   vector<int> tR = node->tripletRight;
+   int cL = compareTripletPythagoreAngles(tL, angle);
+   int cR = compareTripletPythagoreAngles(tR, angle);
+   if(cL==0)//node with O on the left
+     return node;
+   //assert(cL*cR>0);
+   if(cL==-1 && cR==1) //tL < angle < tR
+     return node;
+   if(cL==1) //angle < tL => ignore right half
+     idRight = idMid - 1;
+   if(cR==-1) //angle > tR => ignore left half
+     idLeft = idMid + 1;
  }
+ return NULL;
+}
+
+nodeTree* findNodeOfPythagoreAngle(const vector<int>& angle, const vector<nodeTree*>& tree, int mu) {
+  //Get last level of the tree
+  vector<nodeTree*> tmp_tree;
+  size_t it=0;
+  while (it<tree.size() && tree.at(it)->omega==mu) {
+    tmp_tree.push_back(tree.at(it));
+    it++;
+  }
+  //Handling the last segment in which leftAngle > rightAngle
+  int cL = compareTripletPythagoreAngles(tmp_tree.back()->tripletLeft, angle);
+  int cR = compareTripletPythagoreAngles(tmp_tree.back()->tripletRight, angle);
+  if(cL == -1 || cR == 1)//tripletLeft < angle or tripletRight > angle
+    return tmp_tree.back();
+  
+  //Anyother case
+  int idLeft = 0;
+  int idRight = tmp_tree.size()-1;//Not count the last segment
+  int idMid = 0;
+  while (idLeft <= idRight) {
+    idMid = (idLeft + idRight)/ 2;
+    nodeTree* node = tmp_tree.at(idMid);
+    vector<int> tL = node->tripletLeft;
+    vector<int> tR = node->tripletRight;
+    
+    int cL = compareTripletPythagoreAngles(tL, angle);
+    int cR = compareTripletPythagoreAngles(tR, angle);
+    if(cL==-1 && cR==1) { //tL < angle < tR
+      return node;
+    }
+    if(cL==0)//node with O on the left
+      return node;
+    
+    assert(cL*cR>0);
+    if(cL==1) //angle < tL => ignore right half
+      idRight = idMid - 1;
+    if(cR==-1) //angle > tR => ignore left half
+      idLeft = idMid + 1;
+
+  }
+  return NULL;
+}

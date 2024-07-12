@@ -14,7 +14,9 @@ int main(int , char**) {
   
   //Section 9.1: Initialization
   //Step 1+2: generate euclidean ball of radius rho (Eq 12) and generate triplet (Eq 14)
-  vector<vector<int> > triplets = generateTriplet(r);
+  vector<vector<int> > triplets = generateTripletHingeAngle(r);
+  //Add virtual nodes of 0 in triplets
+  triplets.insert(triplets.begin(), {0,0,1});
   //Step 3: sort triplets (Eq 16) and discard non prime triplets (Property 2)
   vector<vector<int> > sortedTriplets = sortTriplet(triplets);
   vector<vector<int> > vecTriplet = removeDoubleTriplet(sortedTriplets);
@@ -136,7 +138,7 @@ int main(int , char**) {
   //Section 10.5.2: bijective discrete rotations
   vector<vector<int> > pAngles = generateTripletPythagoreAngles(r);
   for(auto angle : pAngles) {
-    nodeTree* node = findNodeOfPythagoreAngle(angle, clean_tree);
+    nodeTree* node = findNodeOfPythagoreAngle(angle, clean_tree, r);
     if(node!=NULL) {
       updateBijectivity(node, true);
       nodeTree* nodeParent = node->p_parent;

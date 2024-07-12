@@ -36,5 +36,5 @@ vector<pair<int, node*> > sortGraphNode(node* circleGraph);
 vector<nodeTree*> createFirstTree(node* circleGraph, int mu);
 
 //Check belonging Pythagore angle for intervals of the tree
-nodeTree* findNodeOfPythagoreAngle(const vector<int>& angle, const vector<nodeTree*>& tree);
+nodeTree* findNodeOfPythagoreAngle(const vector<int>& angle, const vector<nodeTree*>& tree, int mu);
 #endif // Algo1Function_H

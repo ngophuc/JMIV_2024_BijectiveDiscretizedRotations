@@ -144,7 +144,7 @@ vector<vector<int> > generateTripletHingeAngle(int r) {
 }
 
 vector<vector<int> > sortTriplet(int r) {
-  vector<vector<int> > pqk_trie = generateTripletHingeAngleFull(r);
+  vector<vector<int> > pqk_trie = generateTripletHingeAngle(r);
   //trie
   std::sort(begin(pqk_trie), end(pqk_trie), [](vector<int> t1, vector<int> t2) {
     return compareHingeAngles(t1, t2)<0;
@@ -182,7 +182,7 @@ vector<vector<int> > sortTriplet(int r) {
 }
 
 vector<nodeTree*> findPythagoreAngleForSegments(vector<nodeTree*>& tree, int mu) {
-  vector<vector<int> > bAngles = generateTripletPythagoreAnglesFull(mu);
+  vector<vector<int> > bAngles = generateTripletPythagoreAngles(mu);
   std::sort(begin(bAngles), end(bAngles), [](vector<int> t1, vector<int> t2) {
     double a1 = angle_from_sin_cos(double(t1[1])/double(t1[2]), double(t1[0])/double(t1[2]));
     double a2 = angle_from_sin_cos(double(t2[1])/double(t2[2]), double(t2[0])/double(t2[2]));

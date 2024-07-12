@@ -37,6 +37,8 @@ int main(int , char**) {
   tree.push_back(root);
   //Level 1: rho = 1
   vector<vector<int> > tripletL1 = vecTriplet.at(1);//Get triplet of level 1    
+  //Add virtual node of 0 in tripletL1
+  tripletL1.insert(tripletL1.begin(), {0,0,1});
   //Left node [last triplet -> first triplet]
   int lastIdNode = 1;
   //Middle nodes
