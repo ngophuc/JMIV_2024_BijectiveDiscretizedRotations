@@ -37,13 +37,13 @@ vector<vector<int> > generateTripletHingeAngleFull(int r) {
     int q = pts.at(it)[1];//py
     int pq_2 = p*p+q*q;
     int k=0;
-    while (4*k*k+4*k+1 <= pq_2) {
+    while (4*k*k+4*k+1 <= 4*pq_2) {
       vector<int> v = {p, q, k};
       res.push_back(v);
       k++;
     }
     k=-1;
-    while (4*k*k+4*k+1 <= pq_2) {
+    while (4*k*k+4*k+1 <= 4*pq_2) {
       vector<int> v = {p, q, k};
       res.push_back(v);
       k--;
@@ -63,14 +63,14 @@ vector<vector<int> > generateTripletHingeAngle(int r) {
     if(p>=0 && q>=0 && p<=q) { //0 <= p <= q
       int pq_2 = p*p+q*q;
       int k=0;
-      while (4*k*k+4*k+1 <= pq_2) {
+      while (4*k*k+4*k+1 <= 4*pq_2) {
         vector<int> v = {p, q, k};
         if(computeAngle(v)<=M_PI_4)
           res.push_back(v);
         k++;
       }
       k=-1;
-      while (4*k*k+4*k+1 <= pq_2) {
+      while (4*k*k+4*k+1 <= 4*pq_2) {
         vector<int> v = {p, q, k};
         if(computeAngle(v)<=M_PI_4)
           res.push_back(v);
