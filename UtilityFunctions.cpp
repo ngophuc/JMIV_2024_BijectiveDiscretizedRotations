@@ -60,7 +60,12 @@ int signSinus(int p, int q, int k) {
 }
 
 int is_Zero(int p, int q, int k) {
-  return ((signSinus(p, q, k) == 0 && signCosinus(p, q, k) == 1));
+  //return ((signSinus(p, q, k) == 0 && signCosinus(p, q, k) == 1));
+  if(signSinus(p, q, k) == 0 && signCosinus(p, q, k) == 0)
+    return 1;
+  if(signSinus(p, q, k) == 0 && signCosinus(p, q, k) == 1)
+    return 1;
+  return 0;
 }
 
 int is_Pi(int p, int q, int k) {
@@ -300,7 +305,6 @@ int compareCosinusHingePythagoreAngles(const vector<int>& triplet, const vector<
 }
 
 int compareTripletPythagoreAngles(const vector<int>& triplet, const vector<int>& pythagore) {
-  //FIXME: Temporary
   double angleTriplet = computeAngle(triplet);
   double anglePythagore = angle_from_sin_cos(double(pythagore[1])/pythagore[2], double(pythagore[0])/pythagore[2]);
   if(angleTriplet<anglePythagore)
@@ -414,7 +418,8 @@ double angle_from_sin_cos(double sinx, double cosx) //result in -pi to +pi range
 /*___________________________________________*/
 /* Generate Pythagore bijective angles in Z2 */
 /*___________________________________________*/
-vector<vector<int> > generateTripletPythagoreAngles(int r) {
+//For angles in [0, 2I)
+vector<vector<int> > generateTripletPythagoreAnglesFull(int r) {
   vector<vector<int> > pythagoreAngle;
   //p=0
   vector<int> v = {0, 1, 1}; //PI/2
@@ -470,3 +475,20 @@ vector<vector<int> > generateTripletPythagoreAngles(int r) {
   return pythagoreAngle;
 }
 
+//For angles in (0,PI/4)
+vector<vector<int> > generateTripletPythagoreAngles(int r) {
+  vector<vector<int> > pythagoreAngle;
+  vector<int> v = {1, 0, 1}; //p=0
+  pythagoreAngle.push_back(v);
+  
+  int p=1, a, b, c;
+  while(p*p<4*r) {
+    a = 2*p*(p+1);//cos = a/c
+    b = 2*p+1;//sin = a/c
+    c = 2*p*p+2*p+1;
+    vector<int> v1 = {a, b, c};
+    pythagoreAngle.push_back(v1);
+    p++;
+  }
+  return pythagoreAngle;
+}

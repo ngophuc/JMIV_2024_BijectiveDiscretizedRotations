@@ -28,7 +28,8 @@ vector<Point> genBall(int r) { //m=mu**2, r=rho**2
 }
 
 //Step 2: generate triplet (Equation 14)
-vector<vector<int> > generateTriplet(int r) {
+//For angles in [0, 2PI)
+vector<vector<int> > generateTripletHingeAngleFull(int r) {
   vector<vector<int> > res;
   vector<Point> pts = genBall(r);
   for(size_t it=0; it<pts.size(); it++) {
@@ -46,6 +47,35 @@ vector<vector<int> > generateTriplet(int r) {
       vector<int> v = {p, q, k};
       res.push_back(v);
       k--;
+    }
+  }
+  return res;
+}
+
+//For angles in (0,PI/4)
+vector<vector<int> > generateTripletHingeAngle(int r) {
+  vector<vector<int> > res;
+  //res.push_back({0, 0, 0})
+  vector<Point> pts = genBall(r);//generatePointDisk(r);
+  for(size_t it=0; it<pts.size(); it++) {
+    int p = pts.at(it)[0];//px
+    int q = pts.at(it)[1];//py
+    if(p>=0 && q>=0 && p<=q) { //0 <= p <= q
+      int pq_2 = p*p+q*q;
+      int k=0;
+      while (4*k*k+4*k+1 <= pq_2) {
+        vector<int> v = {p, q, k};
+        if(computeAngle(v)<=M_PI_4)
+          res.push_back(v);
+        k++;
+      }
+      k=-1;
+      while (4*k*k+4*k+1 <= pq_2) {
+        vector<int> v = {p, q, k};
+        if(computeAngle(v)<=M_PI_4)
+          res.push_back(v);
+        k--;
+      }
     }
   }
   return res;

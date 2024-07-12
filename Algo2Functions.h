@@ -23,6 +23,9 @@ vector<vector<Point> > generatePoints(int mu);
 vector<vector<vector<int> > > sortTripletNew(int r=10);
 vector<vector<int> > sortTriplet(int r=10);
 
+vector<vector<int> > generateTripletHingeAngleFull(int mu=10);
+vector<vector<int> > generateTripletHingeAngle(int mu=10);
+
 vector<nodeTree*> findPythagoreAngleForSegments(vector<nodeTree*>& tree, int mu);
 vector<vector<int> > findPythagoreAngleForSegments(const vector<int>& tLeft, const vector<int>& tRight, const vector<vector<int> >& bAngles); 
 bool bijectiveBound(nodeTree** newNode, const vector<vector<int> >& pAngles);

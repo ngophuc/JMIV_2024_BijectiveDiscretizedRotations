@@ -22,6 +22,7 @@ using namespace std;
 int normVector(const vector<int>& v);
 
 //Generate Pythagore bijective angles in Z2
+vector<vector<int> > generateTripletPythagoreAnglesFull(int r=20);
 vector<vector<int> > generateTripletPythagoreAngles(int r=20);
 
 //Exact comparison between two triplets encoded hinges angles

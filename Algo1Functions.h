@@ -21,7 +21,8 @@ using namespace std;
 //Step 1: generate euclidean ball of radius rho (Equation 12)
 vector<Point> genBall(int r=10);
 //Step 2: generate triplet (Equation 14)
-vector<vector<int> > generateTriplet(int r=10);
+vector<vector<int> > generateTripletHingeAngleFull(int r=10);
+vector<vector<int> > generateTripletHingeAngle(int r=10);
 //Step 3.1 : sort triplets (Equation 20)
 vector<vector<int> > sortTriplet(const vector<vector<int> >& triplets);
 //Step 3.2: remove double triplets (Property 2)

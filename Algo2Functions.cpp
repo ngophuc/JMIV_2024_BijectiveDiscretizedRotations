@@ -89,7 +89,8 @@ vector<vector<vector<int> > > sortTripletNew(int r) {
   return vecPqk;
 }
 
-vector<vector<int> > generateTriplet(int mu) {
+//For angles in [0, 2PI)
+vector<vector<int> > generateTripletHingeAngleFull(int mu) {
   vector<vector<int> > res;
   //res.push_back({0, 0, 0})
   vector<Point> pts = genBall(mu);//generatePointDisk(r);
@@ -113,8 +114,37 @@ vector<vector<int> > generateTriplet(int mu) {
   return res;
 }
 
+//For angles in (0,PI/4)
+vector<vector<int> > generateTripletHingeAngle(int r) {
+  vector<vector<int> > res;
+  //res.push_back({0, 0, 0})
+  vector<Point> pts = genBall(r);//generatePointDisk(r);
+  for(size_t it=0; it<pts.size(); it++) {
+    int p = pts.at(it)[0];//px
+    int q = pts.at(it)[1];//py
+    if(p>=0 && q>=0 && p<=q) { //0 <= p <= q
+      int pq_2 = p*p+q*q;
+      int k=0;
+      while (4*k*k+4*k+1 <= pq_2) {
+        vector<int> v = {p, q, k};
+        if(computeAngle(v)<=M_PI_4)
+          res.push_back(v);
+        k++;
+      }
+      k=-1;
+      while (4*k*k+4*k+1 <= pq_2) {
+        vector<int> v = {p, q, k};
+        if(computeAngle(v)<=M_PI_4)
+          res.push_back(v);
+        k--;
+      }
+    }
+  }
+  return res;
+}
+
 vector<vector<int> > sortTriplet(int r) {
-  vector<vector<int> > pqk_trie = generateTriplet(r);
+  vector<vector<int> > pqk_trie = generateTripletHingeAngleFull(r);
   //trie
   std::sort(begin(pqk_trie), end(pqk_trie), [](vector<int> t1, vector<int> t2) {
     return compareHingeAngles(t1, t2)<0;
@@ -152,7 +182,7 @@ vector<vector<int> > sortTriplet(int r) {
 }
 
 vector<nodeTree*> findPythagoreAngleForSegments(vector<nodeTree*>& tree, int mu) {
-  vector<vector<int> > bAngles = generateTripletPythagoreAngles(mu);
+  vector<vector<int> > bAngles = generateTripletPythagoreAnglesFull(mu);
   std::sort(begin(bAngles), end(bAngles), [](vector<int> t1, vector<int> t2) {
     double a1 = angle_from_sin_cos(double(t1[1])/double(t1[2]), double(t1[0])/double(t1[2]));
     double a2 = angle_from_sin_cos(double(t2[1])/double(t2[2]), double(t2[0])/double(t2[2]));
