@@ -43,3 +43,8 @@ nodeTree* updateBijectivity(nodeTree* node, bool b){
   node->isBijective = b;
   return node;
 }
+
+nodeTree* updateInjectivity(nodeTree* node, bool b){
+  node->isInjective = b;
+  return node;
+}

@@ -34,6 +34,7 @@ int main(int , char**) {
   nodeTree* root = createNodeTree(0,vector<int> {0,0,0}, vector<int> {0,0,0});
   updateOmega(root, 0);//Omega of the root is 0
   updateBijectivity(root, true);
+  updateInjectivity(root, true);//Bijective -> Injective
   tree.push_back(root);
   //Level 1: rho = 1
   vector<vector<int> > tripletL1 = vecTriplet.at(1);//Get triplet of level 1    
@@ -54,6 +55,7 @@ int main(int , char**) {
     updateAlpha(treeNode);
     addParent(treeNode, root->idNode, root);
     updateBijectivity(treeNode, true);
+    updateInjectivity(treeNode, true);//Bijective -> Injective
     tree.push_back(treeNode);
   }
   lastIdNode = tree.back()->idNode+1;
@@ -77,7 +79,7 @@ int main(int , char**) {
     }
     cout<<"------"<< endl;
     
-    //Version with two liste in //
+    //Version with two lists in //
     if(triplet_rho.size()!=0) {
       //Insert the triplets to the tree
       lastIdNode = insertNewTripletsToTreeBijective(tree, &currentLevel, lastIdNode, triplet_rho);
@@ -89,13 +91,45 @@ int main(int , char**) {
           tree.erase (tree.begin()+it);
       }
       
-      //Display tree 
+      //Display tree
       cout<<"Display clean tree at level "<<rho<<endl;
       for(auto e : tree)
         cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" with (alpha="<<e->alpha<<", omega="<<e->omega<<")"<<endl;
     }
+    
+    // Check for injectivity
+    for(size_t it=0; it<triplet_rho.size(); it++) {
+      vector<pair<vector<int>, bool > > vecInj = genVecInjectiveAngle(triplet_rho.at(it));
+      
+      //Map to currentLevel
+      //Fist node (loop node) is bijective, therefore injective
+      updateInjectivity(currentLevel->data.p_segment, true);
+      //Handling the next nodes
+      node* head = currentLevel->next;
+      while (head != NULL) {
+        nodeTree* current_seg = head->data.p_segment;
+        nodeTree* parent_seg = current_seg->p_parent;
+        vector<int> left_triplet = current_seg->tripletLeft;
+        vector<int> right_triplet = current_seg->tripletRight;
+        bool isInj = false;
+        if(current_seg->isBijective == true)
+          isInj = true; //bijective -> injective
+        else {
+          if(parent_seg->isInjective == false){//parent non inj -> children non inj
+            isInj = false;
+          }
+          else { //only if the parent is injective then verify the injectivity of the children
+            isInj = injectiveVerif(vecInj, right_triplet);
+          }
+        }
+        if(current_seg->alpha == rho) //update if it is first appear in the tree
+          updateInjectivity(current_seg, isInj);
+        //Move to the next segment
+        head = head->next;
+      }
+    }
   }
-
+  
   //Update omega (Algo 2: Lines 5-6)
   for(size_t it=0; it<tree.size(); it++) {
     nodeTree* aNode = tree.at(it);
@@ -105,7 +139,10 @@ int main(int , char**) {
 
   cout<<"------- Display clear tree with bijectivity from vector"<<endl;
   for(auto e : tree){
-    cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" with (alpha="<<e->alpha<<", omega="<<e->omega<<") and bijectiviy="<<e->isBijective<<endl;
+    //cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" with (alpha="<<e->alpha<<", omega="<<e->omega<<") and bijectiviy="<<e->isBijective<<endl;
+    if(e->omega!=0 && e->alpha!=0) {
+      cout<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> (alpha="<<e->alpha<<", omega="<<e->omega<<") "<<computeAngle(e->tripletLeft)*180/M_PI<<"; "<<computeAngle(e->tripletRight)*180/M_PI<<" et bij="<<e->isBijective<<", inj="<<e->isInjective<<endl;
+    }
   }
 
   return 0;

@@ -10,6 +10,7 @@ typedef struct nodeTree{
   int idNode;
   int idParent;
   bool isBijective=false;
+  bool isInjective=false;
   nodeTree* p_parent;
   vector<int> tripletLeft;
   vector<int> tripletRight;
@@ -26,5 +27,6 @@ nodeTree* updateOmega(nodeTree* node, int o);
 nodeTree* updateAlpha(nodeTree* node, int a);
 nodeTree* updateAlpha(nodeTree* node);//Eq. 48
 nodeTree* updateBijectivity(nodeTree* node, bool b);
+nodeTree* updateInjectivity(nodeTree* node, bool b);
 
 #endif //Tree_h

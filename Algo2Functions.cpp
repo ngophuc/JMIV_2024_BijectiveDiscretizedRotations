@@ -471,3 +471,274 @@ int insertNewTripletsToTreeBijective(vector<nodeTree*>& tree, node** head, int i
   }
   return idNewNode;
 }
+
+bool injectiveVerif(const vector<pair<vector<int>, bool > >& vecInj, const vector<int>& triplet) {
+  size_t it=0;
+  int res_comp = -1;
+  while(it<vecInj.size() && res_comp<=0){
+    res_comp = compareHingeAngles(vecInj.at(it).first, triplet); //-1 if a1 < a2
+    if(res_comp==0) //0 if a1 = a2
+      return vecInj.at(it).second;
+    it++;
+  }
+  if(it<vecInj.size()) {
+    return vecInj.at(it-1).second;
+  }
+  return false;
+}
+
+vector<vector<int> > genTripletFromPoint(const Point& pt) {
+  vector<vector<int> > res;
+  int p = pt[0];//px
+  int q = pt[1];//py
+  
+  if(p>=0 && q>=0 /*&& p<=q*/) { //0 <= p <= q
+    int pq_2 = p*p+q*q;
+    int k=0;
+    while (4*k*k+4*k+1 <= 4*pq_2) {
+      vector<int> v = {p, q, k};
+      if(computeAngle(v)<=M_PI_4)
+        res.push_back(v);
+      v = {q, p, k};
+      if(computeAngle(v)<=M_PI_4)
+        res.push_back(v);
+      k++;
+    }
+    k=-1;
+    while (4*k*k+4*k+1 <= 4*pq_2) {
+      vector<int> v = {p, q, k};
+      if(computeAngle(v)<=M_PI_4)
+        res.push_back(v);
+      v = {q, p, k};
+      if(computeAngle(v)<=M_PI_4)
+        res.push_back(v);
+      k--;
+    }
+  }
+  return res;
+}
+
+vector<vector<int> > sortTripletFromPoint(const Point& pt){
+  //Gen pqk for pt
+  vector<vector<int> > pqk_trie = genTripletFromPoint(pt);
+  if(pqk_trie.size()==0)
+    return pqk_trie;
+  
+  //Sort the list
+  std::sort(begin(pqk_trie), end(pqk_trie), [](vector<int> t1, vector<int> t2) {
+    return compareHingeAngles(t1, t2)<0;
+  });
+  
+  //Remove double hinge angles
+  size_t it=0, it_next=1, it_min;
+  double norme1, norme2, angle1, angle2;
+  vector<vector<int> > pqk_non_double;
+  //In case of two elements only
+  if(pqk_trie.size()==2) {
+    vector<int> t1 = pqk_trie.at(it);
+    vector<int> t2 = pqk_trie.at(it_next);
+    angle1 = computeAngle(t1);
+    angle2 = computeAngle(t2);
+    if(fabs(angle1-angle2)>1e-6)
+      pqk_non_double.push_back(t1);
+  }
+  else {
+    while(it<pqk_trie.size() && it_next<pqk_trie.size()-1) {
+      it_next = it+1;
+      vector<int> t1 = pqk_trie.at(it);
+      vector<int> t2 = pqk_trie.at(it_next);
+      angle1 = computeAngle(t1);
+      angle2 = computeAngle(t2);
+      it_min = it;
+      while(fabs(angle1-angle2)<1e-6 && it_next<pqk_trie.size()-1) {
+        norme1 = t1[0]*t1[0]+t1[1]*t1[1];
+        norme2 = t2[0]*t2[0]+t2[1]*t2[1];
+        if(norme2<norme1)
+          it_min = it_next;
+        it_next++;
+        t1 = pqk_trie.at(it_min);
+        t2 = pqk_trie.at(it_next);
+        angle1 = computeAngle(t1);
+        angle2 = computeAngle(t2);
+      }
+      pqk_non_double.push_back(pqk_trie.at(it_min));
+      it=it_next;
+    }
+  }
+  //Push the last angle
+  pqk_non_double.push_back(pqk_trie.back());
+  
+  return pqk_non_double;
+}
+
+vector<pair<vector<int>, Point > > genTransfSeq(Point pt) {
+  vector<pair<vector<int>, Point > > transf_pt;
+  vector<vector<int> > pqk_pt = sortTripletFromPoint(pt);
+  
+  if(pqk_pt.size()==0)
+    return transf_pt;
+  int tp=pt[0], tq=pt[1];
+  for(auto p : pqk_pt) {
+    if(p[0]<=p[1])//p<=q => x--
+      tp--;
+    else//y--
+      tq--;
+    transf_pt.push_back(make_pair(p, Point(tp,tq)));
+  }
+  return transf_pt;
+}
+
+bool isSamePoint(Point pt1, Point pt2) {
+  return ((pt1[0]==pt2[0]) && (pt1[1]==pt2[1]));
+}
+
+bool isSameVector(const vector<int>& vec1, const vector<int>& vec2) {
+  if(vec1.size() != vec2.size())
+    return false;
+  for(size_t it=0; it<vec1.size(); it++) {
+    if(vec1.at(it) != vec2.at(it))
+      return false;
+  }
+  return true;
+}
+
+vector<pair<vector<int>, bool > > findInjList(const vector<pair<vector<int>, Point > >& list1, Point pt1, const vector<pair<vector<int>, Point > >& list2, Point pt2) {
+  vector<pair<vector<int>, bool > > res;
+  int it_lst1=0, it_lst2=0;
+  vector<int> triplet_lst1, triplet_lst2;
+  Point pt_lst1, pt_lst2;
+  
+  while(it_lst1<list1.size() && it_lst2<list2.size()) {
+    triplet_lst1 = list1.at(it_lst1).first;
+    triplet_lst2 = list2.at(it_lst2).first;
+    pt_lst1 = list1.at(it_lst1).second;
+    pt_lst2 = list2.at(it_lst2).second;
+    if(it_lst1==0)
+      pt_lst1 = pt1;
+    else
+      pt_lst1 = list1.at(it_lst1-1).second;
+    if(it_lst2==0)
+      pt_lst2 = pt2;
+    else
+      pt_lst2 = list2.at(it_lst2-1).second;
+    
+    int res_comp = compareHingeAngles(triplet_lst1, triplet_lst2);
+    if(res_comp==-1) {//angle_lst1<angle_lst2
+      res.push_back(make_pair(triplet_lst1, !isSamePoint(pt_lst1, pt_lst2)));
+      it_lst1++;
+    }
+    else {
+      res.push_back(make_pair(triplet_lst2, !isSamePoint(pt_lst1, pt_lst2)));
+      it_lst2++;
+    }
+  }
+  while(it_lst1<list1.size()) {
+    
+    if(it_lst1==0)
+      pt_lst1 = pt1;
+    else
+      pt_lst1 = list1.at(it_lst1-1).second;
+    //pt_lst1 = list1.at(it_lst1).second;
+    pt_lst2 = list2.at(it_lst2-1).second;//last element
+
+    res.push_back(make_pair(triplet_lst1, !isSamePoint(pt_lst1, pt_lst2)));
+    it_lst1++;
+  }
+  while(it_lst2<list2.size()) {
+    pt_lst1 = list1.at(it_lst1-1).second;//last element
+    if(it_lst2==0)
+      pt_lst2 = pt2;
+    else
+      pt_lst2 = list2.at(it_lst2-1).second;
+    //pt_lst2 = list2.at(it_lst2).second;
+    
+    triplet_lst2 = list2.at(it_lst2).first;
+    res.push_back(make_pair(triplet_lst2, !isSamePoint(pt_lst1, pt_lst2)));
+    it_lst2++;
+  }
+ 
+  return res;
+}
+
+vector<pair<vector<int>, bool > > mergeInjList(const vector<pair<vector<int>, bool > >& list1, vector<pair<vector<int>, bool > >& list2) {
+  vector<pair<vector<int>, bool > > res;
+  int it_lst1=0, it_lst2=0;
+  vector<int> triplet_lst1, triplet_lst2;
+  bool inj_lst1, inj_lst2;
+  
+  //The first element
+  triplet_lst1 = list1.at(it_lst1).first;
+  triplet_lst2 = list2.at(it_lst2).first;
+  inj_lst1 = list1.at(it_lst1).second;
+  inj_lst2 = list2.at(it_lst2).second;
+  
+  int res_comp = compareHingeAngles(triplet_lst1, triplet_lst2);
+  if(res_comp==-1) {//angle_lst1<angle_lst2
+    res.push_back(make_pair(triplet_lst1, inj_lst1));
+    it_lst1++;
+  }
+  else {
+    res.push_back(make_pair(triplet_lst2, inj_lst2));
+    it_lst2++;
+    if(res_comp==0) //angle_lst1==angle_lst2
+      it_lst1++;
+  }
+  
+  //All other elements
+  while(it_lst1<list1.size() && it_lst2<list2.size()) {
+    triplet_lst1 = list1.at(it_lst1).first;
+    triplet_lst2 = list2.at(it_lst2).first;
+    inj_lst1 = list1.at(it_lst1).second;
+    inj_lst2 = list2.at(it_lst2).second;
+    
+    int res_comp = compareHingeAngles(triplet_lst1, triplet_lst2);
+    if(res_comp==-1) {//angle_lst1<angle_lst2
+      res.push_back(make_pair(triplet_lst1, inj_lst1 && inj_lst2));
+      it_lst1++;
+    }
+    else {
+      res.push_back(make_pair(triplet_lst2, inj_lst2 && inj_lst1));
+      it_lst2++;
+      if(res_comp==0)//angle_lst1==angle_lst2
+        it_lst1++;
+    }
+  }
+  while(it_lst1<list1.size()) {
+    triplet_lst1 = list1.at(it_lst1).first;
+    inj_lst1 = list1.at(it_lst1).second;
+    res.push_back(make_pair(triplet_lst1, inj_lst1));
+    it_lst1++;
+  }
+  while(it_lst2<list2.size()) {
+    triplet_lst2 = list2.at(it_lst2).first;
+    inj_lst2 = list2.at(it_lst2).second;
+    res.push_back(make_pair(triplet_lst2, inj_lst2));
+    it_lst2++;
+  }
+
+  return res;
+}
+
+vector<pair<vector<int>, bool > > genVecInjectiveAngle(const vector<int>& triplet) {
+  Point pt(triplet[0], triplet[1]);
+  Point npt1(pt[0]-1, pt[1]);//neighbour 1
+  Point npt2(pt[0], pt[1]-1);//neighbour 2
+  vector<pair<vector<int>, Point > > transf_pt = genTransfSeq(pt);
+  vector<pair<vector<int>, Point > > transf_npt1 = genTransfSeq(npt1);
+  vector<pair<vector<int>, Point > > transf_npt2 = genTransfSeq(npt2);
+  
+  vector<pair<vector<int>, bool > > res1;
+  if(transf_npt1.size()!=0)
+    res1 = findInjList(transf_pt, pt, transf_npt1, npt1);
+  vector<pair<vector<int>, bool > > res2;
+  if(transf_npt2.size()!=0)
+    res2 = findInjList(transf_pt, pt, transf_npt2, npt2);
+  
+  if(res1.size()==0)
+    return res2;
+  if(res2.size()==0)
+    return res1;
+
+  vector<pair<vector<int>, bool > > res = mergeInjList(res1, res2);
+  return res;
+}
