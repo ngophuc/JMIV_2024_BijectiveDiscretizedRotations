@@ -1,6 +1,8 @@
 # JMIV_2024_BijectiveDiscretizedRotations
 
-Source code of JMIV Paper: Finite Rotations on Z2: A Hierarchical Framework for Bijectivity and Injectivity Analysis
+Source code of JMIV Paper: 
+
+# Finite Rotations on Z2: A Hierarchical Framework for Bijectivity and Injectivity Analysis
 
 ## Compilation
 
