@@ -18,4 +18,7 @@ make -j4
 
 ## Execution
 
-./BijectiveDiscretizedRotations
+./AlgoBottomUp
+
+./AlgoTopDown
+
