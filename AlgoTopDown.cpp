@@ -139,10 +139,7 @@ int main(int , char**) {
 
   cout<<"------- Display clear tree with bijectivity from vector"<<endl;
   for(auto e : tree){
-    //cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" with (alpha="<<e->alpha<<", omega="<<e->omega<<") and bijectiviy="<<e->isBijective<<endl;
-    if(e->omega!=0 && e->alpha!=0) {
-      cout<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> (alpha="<<e->alpha<<", omega="<<e->omega<<") "<<computeAngle(e->tripletLeft)*180/M_PI<<"; "<<computeAngle(e->tripletRight)*180/M_PI<<" et bij="<<e->isBijective<<", inj="<<e->isInjective<<endl;
-    }
+    cout<<"id="<<e->idNode<<": "<<displayVector2(e->tripletLeft)<<" --> "<<displayVector2(e->tripletRight)<<" >>> idParent="<<e->idParent<<" with (alpha="<<e->alpha<<", omega="<<e->omega<<") and bijectiviy="<<e->isBijective<<endl;
   }
 
   return 0;
